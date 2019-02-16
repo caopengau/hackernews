@@ -42,10 +42,8 @@ class App extends Component {
     console.log(this.state.searchTerm)
   }
 
-  onDismiss(id) { 
-    const isNotId = item => item.objectID !== id; 
-    const updatedList = this.state.list.filter(isNotId); 
-    this.setState({ list: updatedList })
+  onDismiss(id) {
+    const isNotId = item => item.objectID !== id; const updatedList = this.state.list.filter(isNotId); this.setState({ list: updatedList });
   }
 
 
@@ -121,7 +119,7 @@ const Search = ({value,onChange,children})=>
 // }
 
 function Table(props){
-  const {pattern, onDismiss} = props;
+  const {list, pattern, onDismiss} = props;
   return(
     <div className="table">
       {list.filter(isSearched(pattern)).map(item=>
@@ -175,6 +173,7 @@ class Button extends Component{
   render(){
     const{
       onClick,
+      onDismiss,
       className="",
       children,
     } = this.props;
