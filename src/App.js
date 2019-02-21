@@ -1,7 +1,12 @@
-import React, { Component } from 'react'; import './App.css';
+import React, { Component } from 'react';
 
-const DEFAULT_QUERY = 'redux';
+import axios from 'axios'; 
+import './App.css';
+
+const DEFAULT_QUERY = '';
 const PATH_BASE = 'https://hn.algolia.com/api/v1'; 
+// // error API page
+// const PATH_BASE = 'https://hn.foo.bar.com/api/v1';
 const PATH_SEARCH = '/search'; 
 const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page=';
@@ -40,10 +45,10 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      results: null, 
-      searchKey: '',
       searchTerm: DEFAULT_QUERY, 
       list: list,
+      result: null,
+      error: null, 
     }
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -54,10 +59,12 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page = 0) { 
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`) 
-    .then(response => response.json()) 
-    .then(result => this.setSearchTopStories(result)) 
-    .catch(error => error); 
+    // fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`) 
+    // .then(response => response.json()) 
+    // .then(result => this.setSearchTopStories(result))
+    axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
+    .then(result => this.setSearchTopStories(result.data))
+    .catch(error => this.setState({ error }));
   }
 
   onSearchSubmit(event) { 
@@ -96,11 +103,11 @@ class App extends Component {
 
   render() {
 
-    const { searchTerm, result } = this.state;
+    const { searchTerm, result, error } = this.state;
     const page = (result && result.page) || 0; 
 
-    if (!result)
-      return null;
+    if (error) { return <p>Something went wrong.</p>; }
+
 
     return (
       <div className="page">
